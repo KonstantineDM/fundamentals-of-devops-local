@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  LambdaSample:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: lambda-sample-sam
+      Runtime: nodejs22.x
+      Handler: index.handler
+      CodeUri: LambdaSample
+      MemorySize: 128
+      Timeout: 5
+      Environment:
+        Variables:
+          NODE_ENV: production
+      FunctionUrlConfig:
+        AuthType: NONE
+    Metadata:
+      SamResourceId: LambdaSample
+Outputs:
+  FunctionUrl:
+    Description: Lambda Function URL
+    Value:
+      Fn::GetAtt:
+      - LambdaSampleUrl
+      - FunctionUrl
