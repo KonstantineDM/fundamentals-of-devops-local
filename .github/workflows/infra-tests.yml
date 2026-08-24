@@ -12,6 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Debug GitHub context
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Ref: $GITHUB_REF"
+          echo "Actor: $GITHUB_ACTOR"
+
       - uses: aws-actions/configure-aws-credentials@v6
         with:
           # TODO: fill in your IAM role ARN!
