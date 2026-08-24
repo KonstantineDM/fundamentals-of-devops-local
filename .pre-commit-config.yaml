@@ -1,0 +1,16 @@
+repos:
+  - repo: local
+    hooks:
+      - id: tofu-validate-lambda-sample
+        name: "CH5: Tofu validate lambda-sample"
+        entry: bash -c 'cd ch5/tofu/live/lambda-sample && tofu validate'
+        language: system
+        pass_filenames: false
+        files: ^ch5/tofu/live/
+
+      - id: tofu-format-lambda-sample
+        name: "CH5: Tofu format lambda-sample"
+        entry: bash -c 'cd ch5/tofu/live/lambda-sample && tofu fmt -check -diff'
+        language: system
+        pass_filenames: false
+        files: ^ch5/tofu/live/
