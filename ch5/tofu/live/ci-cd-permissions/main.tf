@@ -17,6 +17,6 @@ module "iam_roles" {
     enable_iam_role_for_testing = true
 
     # TODO: fill in your own repo name here!
-    github_repo = "KonstantineDM/fundamentals-of-devops-local"
+    github_repo = "KonstantineDM@71542112/fundamentals-of-devops-local@1338389819"
     lambda_base_name = "lambda-sample"
 }
