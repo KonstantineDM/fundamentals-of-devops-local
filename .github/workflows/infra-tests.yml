@@ -12,9 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Debug OIDC
-        uses: github/actions-oidc-debugger@main
-
       - name: Debug GitHub context
         run: |
           echo "Repository: $GITHUB_REPOSITORY"
