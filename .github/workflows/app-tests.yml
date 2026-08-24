@@ -13,6 +13,14 @@ jobs:
         working-directory: ch5/sample-app
         run: npm install
 
+      - name: Format
+        working-directory: ch5/sample-app
+        run: npm run format
+
+      - name: Lint
+        working-directory: ch5/sample-app
+        run: npm run lint
+
       - name: Run tests
         working-directory: ch5/sample-app
         run: npm test

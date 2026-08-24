@@ -1,12 +1,12 @@
-const express = require("express");
+const express = require('express');
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("Hello, DevOps!");
+app.get('/', (req, res) => {
+  res.send('Hello, DevOps!');
 });
 
-app.get("/name/:name", (req, res) => {
+app.get('/name/:name', (req, res) => {
   res.send(`Hello, ${req.params.name}!`);
 });
 
