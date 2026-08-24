@@ -12,6 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Get OIDC token
+        run: |
+          ID_TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://demo" | jq -r .value)
+          echo $ID_TOKEN | base64
+
       - name: Debug GitHub context
         run: |
           echo "Repository: $GITHUB_REPOSITORY"
