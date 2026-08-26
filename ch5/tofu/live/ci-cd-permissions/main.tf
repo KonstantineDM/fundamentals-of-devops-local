@@ -19,4 +19,26 @@ module "iam_roles" {
   # TODO: fill in your own repo name here!
   github_repo      = "KonstantineDM@71542112/fundamentals-of-devops-local@1338389819"
   lambda_base_name = "lambda-sample"
+
+  enable_iam_role_for_plan = true
+  enable_iam_role_for_apply = true
+  # TODO: fill in your own bucket and table name here!
+  tofu_state_bucket = "dke-fundamentals-of-devops-tofu-state"
+  tofu_state_dynamodb_table = "dke-fundamentals-of-devops-tofu-state"
+}
+
+module "iam_roles_eks" {
+  source            = "../../modules/gh-actions-iam-roles-eks"
+  
+  name              = "eks-sample"
+  github_repo       = "KonstantineDM@71542112/fundamentals-of-devops-local@1338389819"
+  oidc_provider_arn = module.oidc_provider.oidc_provider_arn
+
+  eks_base_name     = "eks-sample"
+
+  enable_iam_role_for_plan = true
+  enable_iam_role_for_apply = true
+
+  tofu_state_bucket = "dke-fundamentals-of-devops-tofu-state"
+  tofu_state_dynamodb_table = "dke-fundamentals-of-devops-tofu-state"
 }
