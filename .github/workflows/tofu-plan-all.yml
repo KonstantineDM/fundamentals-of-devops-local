@@ -20,7 +20,8 @@ jobs:
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96
         with:
           dir_names: true
-          files: ch5/tofu/live/**/*
+          dir_names_max_depth: 4
+          files: ch5/tofu/live/**
           files_ignore: ch5/tofu/**/.terraform/**
 
       - uses: aws-actions/configure-aws-credentials@v6
@@ -29,6 +30,7 @@ jobs:
           role-to-assume: arn:aws:iam::866409327334:role/lambda-sample-plan
           role-session-name: plan-${{ github.run_number }}-${{ github.actor }}
           aws-region: eu-central-1
+          retry-max-attempts: 3
 
       - uses: opentofu/setup-opentofu@v2
 
