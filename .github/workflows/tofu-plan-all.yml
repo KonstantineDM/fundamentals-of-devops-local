@@ -23,6 +23,7 @@ jobs:
         with:
           dir_names: true
           dir_names_max_depth: 4
+          matrix: true
           files: ch5/tofu/live/**
           files_ignore: ch5/tofu/**/.terraform/**
 
@@ -31,11 +32,12 @@ jobs:
           DIRECTORIES: ${{ steps.changed-dirs.outputs.all_changed_files }}
         run: |
           echo "Directories:"
-          printf '<%s>\n' $DIRECTORIES
+          echo "$DIRECTORIES"
 
   plan:
     name: "Tofu Plan"
     needs: changed-dirs
+    working-directory: ${{ matrix.directory }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write 
