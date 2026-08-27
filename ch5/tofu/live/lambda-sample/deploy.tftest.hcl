@@ -20,7 +20,7 @@ run "validate_root" {
   }
 
   assert {
-    condition     = data.http.test_endpoint.response_body == "Fundamentals of DevOps!"
+    condition     = data.http.test_endpoint.response_body == "Fundamentals of DevOps V2!"
     error_message = "Unexpected body: ${data.http.test_endpoint.response_body}"
   }
 }

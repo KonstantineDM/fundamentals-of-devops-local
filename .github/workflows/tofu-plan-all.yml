@@ -1,0 +1,62 @@
+name: Tofu Plan
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  plan:
+    name: "Tofu Plan"
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write 
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96
+        with:
+          dir_names: true
+          dir_names_max_depth: 4
+          files: ch5/tofu/live/**
+          files_ignore: ch5/tofu/**/.terraform/**
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          # TODO: fill in your IAM role ARN!
+          role-to-assume: arn:aws:iam::866409327334:role/lambda-sample-plan
+          role-session-name: plan-${{ github.run_number }}-${{ github.actor }}
+          aws-region: eu-central-1
+          retry-max-attempts: 3
+
+      - uses: opentofu/setup-opentofu@v2
+
+      - name: tofu plan
+        id: plan
+        if: steps.changed-files.outputs.any_changed == 'true'
+        env:
+          CHANGED_DIRS: ${{ steps.changed-files.outputs.all_changed_files }}
+        run: |
+          for dir in $CHANGED_DIRS; do
+            echo "========================================"
+            echo "Planning $dir"
+            echo "========================================"
+
+            tofu -chdir="$dir" init -no-color -input=false
+            tofu -chdir="$dir" plan -no-color -input=false -lock=false
+          done
+
+      - uses: peter-evans/create-or-update-comment@v5
+        if: always()
+        env:
+          RESULT_EMOJI: ${{ steps.plan.outcome == 'success' && '✅' || '⚠' }}
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## ${{ env.RESULT_EMOJI }} `tofu plan` output
+            ```${{ steps.plan.outputs.stdout }}```
+
+
