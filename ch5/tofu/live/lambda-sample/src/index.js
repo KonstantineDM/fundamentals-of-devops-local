@@ -1,6 +1,6 @@
 exports.handler = (event, context, callback) => {
   if (event.rawPath === "/") {
-    return callback(null, {statusCode: 200, body: "Fundamentals of DevOps!"});
+    return callback(null, {statusCode: 200, body: "Fundamentals of DevOps V2!"});
   }
 
   if (event.rawPath === "/name/spam") {
