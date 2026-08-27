@@ -16,7 +16,7 @@ module "iam_roles" {
 
   enable_iam_role_for_testing = true
 
-  # TODO: fill in your own repo name with IDs here!
+  # TODO: fill in your own repo name with user and repo IDs here!
   github_repo      = "KonstantineDM@71542112/fundamentals-of-devops-local@1338389819"
   lambda_base_name = "lambda-sample"
 
