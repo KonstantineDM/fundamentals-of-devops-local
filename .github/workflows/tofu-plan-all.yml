@@ -5,24 +5,51 @@ on:
     branches: ["main"]
 
 jobs:
+  changed-dirs:
+    name: Get changed files
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    outputs:
+      directories: ${{ steps.changed-dirs.outputs.all_changed_files }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Get changed directories
+        id: changed-dirs
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96
+        with:
+          dir_names: true
+          dir_names_max_depth: 4
+          matrix: true
+          files: ch5/tofu/live/**
+          files_ignore: ch5/tofu/**/.terraform/**
+
+      - name: Debug changed directories
+        env:
+          DIRECTORIES: ${{ steps.changed-dirs.outputs.all_changed_files }}
+        run: |
+          echo "Directories:"
+          echo "$DIRECTORIES"
+
   plan:
     name: "Tofu Plan"
+    needs: changed-dirs
+    working-directory: ${{ matrix.directory }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write 
       id-token: write
       contents: read
+
+    strategy:
+      matrix:
+        directory: ${{ fromJSON(needs.changed-dirs.outputs.directories) }}
+
     steps:
       - uses: actions/checkout@v7
-
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96
-        with:
-          dir_names: true
-          dir_names_max_depth: 4
-          files: ch5/tofu/live/**
-          files_ignore: ch5/tofu/**/.terraform/**
 
       - uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -36,18 +63,10 @@ jobs:
 
       - name: tofu plan
         id: plan
-        if: steps.changed-files.outputs.any_changed == 'true'
-        env:
-          CHANGED_DIRS: ${{ steps.changed-files.outputs.all_changed_files }}
+        working-directory: ${{ matrix.directory }}
         run: |
-          for dir in $CHANGED_DIRS; do
-            echo "========================================"
-            echo "Planning $dir"
-            echo "========================================"
-
-            tofu -chdir="$dir" init -no-color -input=false
-            tofu -chdir="$dir" plan -no-color -input=false -lock=false
-          done
+          tofu init -no-color -input=false
+          tofu plan -no-color -input=false -lock=false
 
       - uses: peter-evans/create-or-update-comment@v5
         if: always()
