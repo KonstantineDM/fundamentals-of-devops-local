@@ -26,8 +26,16 @@ jobs:
           files: ch5/tofu/live/**
           files_ignore: ch5/tofu/**/.terraform/**
 
+      - name: Debug changed directories
+        env:
+          DIRECTORIES: ${{ steps.changed-dirs.outputs.all_changed_files }}
+        run: |
+          echo "Directories:"
+          printf '<%s>\n' $DIRECTORIES
+
   plan:
     name: "Tofu Plan"
+    needs: changed-dirs
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write 
