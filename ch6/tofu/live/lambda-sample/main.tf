@@ -1,0 +1,22 @@
+provider "aws" {
+  region = "eu-central-1"
+}
+
+module "function" {
+  source  = "brikis98/devops/book//modules/lambda"
+  version = "1.0.1"
+
+  name        = var.name
+  src_dir     = "${path.module}/src"
+  runtime     = "nodejs22.x"
+  handler     = "index.handler"
+  memory_size = var.memory_size
+  timeout = 5
+
+  environment_variables = {
+    NODE_ENV = "production"
+    ENV_NAME = var.environment
+  }
+
+  create_url = true
+}
