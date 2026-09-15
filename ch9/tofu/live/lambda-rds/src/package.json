@@ -1,0 +1,10 @@
+{
+    "name": "lambda-rds-example",
+    "version": "0.0.1",
+    "description": "Example app 'Fundamentals of DevOps and Software Delivery'",
+    "author": "KonstantineDM",
+    "dependencies": {
+        "knex": "^3.3.0",
+        "pg": "^8.23.0"
+    }
+}
