@@ -57,3 +57,44 @@ module "cloudwatch_dashboard" {
     alb_arn_suffix = module.alb.alb_arn_suffix
     health_check_id = aws_route53_health_check.example.id
 }
+
+provider "aws" {
+    region = "us-east-1"
+    alias = "us_east_1"
+}
+
+resource "aws_cloudwatch_metric_alarm" "sample_app_is_down" {
+    provider = aws.us_east_1
+
+    alarm_name = "sample-app-is-down"
+
+    namespace = "AWS/Route53"
+    metric_name = "HealthCheckStatus"
+    dimensions = {
+        HealthCheckId = aws_route53_health_check.example.id
+    }
+
+    statistic = "Minimum"
+    comparison_operator = "LessThanThreshold"
+    threshold = 1
+    period = 60
+    evaluation_periods = 1
+
+    alarm_actions = [aws_sns_topic.cloudwatch_alerts.arn]
+}
+
+resource "aws_sns_topic" "cloudwatch_alerts" {
+    provider = aws.us_east_1
+
+    name = "sample-app-cloudwatch-alerts"
+}
+
+resource "aws_sns_topic_subscription" "sms" {
+    provider = aws.us_east_1
+
+    topic_arn = aws_sns_topic.cloudwatch_alerts.arn
+    protocol = "email-json"
+
+    # TODO: fill in your own email address
+    endpoint = var.sns_notifications_email
+}
